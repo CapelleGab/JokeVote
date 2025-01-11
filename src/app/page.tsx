@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import getJoke from "./api/jokeAPI";
+import { Joke } from "./components/joke";
 
 export default function Home() {
   const [joke, setJoke] = useState<string>("");
@@ -31,12 +31,16 @@ export default function Home() {
   };
 
   const handleAddFavorite = () => {
+    if (isFav) {
+      setIsFav(false);
+      return;
+    }
     const newFavorite = {
       id: Date.now(),
       label: joke,
       answer: answer,
     };
-    setIsFav(true);
+    setIsFav(!isFav);
     setFavorites([...Favorites, newFavorite]);
   };
 
@@ -53,7 +57,7 @@ export default function Home() {
 
   return (
     <main className="h-screen flex items-center justify-center">
-      <div className="p-10 flex justify-center flex-col items-center h-fit w-[70%] bg-white rounded-lg">
+      <div className="p-10 flex justify-center flex-col items-center h-fit w-[70%] ring-1 ring-gray-400 shadow-xl bg-white rounded-lg">
         <h1 className="text-black text-2xl font-bold mb-4">
           Générateur de blagues
         </h1>
@@ -96,25 +100,14 @@ export default function Home() {
           </button>
         </div>
         <hr />
-        <div className="gap-2 flex flex-col">
+        <div className="gap-2">
           {joke !== "" ? (
-            <div className="p-4 ring-2 ring-neutral-500 rounded-lg">
-              <div className="float-end">
-                {isFav ? (
-                  <MdFavorite color="black" width={20} />
-                ) : (
-                  <MdFavoriteBorder
-                    color="black"
-                    width={20}
-                    onClick={handleAddFavorite}
-                  />
-                )}
-              </div>
-              <p className="text-base text-black mb-2 mr-24">{joke}</p>
-              <p className="text-base text-black blur-md hover:blur-0 ease-in-out duration-200">
-                {answer}
-              </p>
-            </div>
+            <Joke
+              text={joke}
+              answer={answer}
+              isFav={isFav}
+              onClick={handleAddFavorite}
+            />
           ) : (
             <></>
           )}
@@ -125,7 +118,27 @@ export default function Home() {
         >
           Générer une blague
         </button>
+
+        <br />
+
+        <div className="flex flex-col w-full">
+          <h3 className="text-left text-2xl mb-3">My Favorite</h3>
+          <div className="flex flex-col gap-3">
+            {Favorites.map((fav) => (
+              <span key={fav.id}>
+                <Joke
+                  text={fav.label}
+                  answer={fav.answer}
+                  onClick={handleAddFavorite}
+                  isFav={isFav}
+                />
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
+
+      <footer>&copy; 2025, by Gabin made with ❤️</footer>
     </main>
   );
 }

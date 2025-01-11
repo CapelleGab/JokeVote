@@ -6,8 +6,7 @@ interface JokesProps {
 
 const getJoke = async ({ filtre }: JokesProps) => {
   const baseAPI = "https://api.blagues-api.fr/api/";
-  const tokenAPI =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzA1MDI4MDQ0MDQ3Nzc3NzkyIiwibGltaXQiOjEwMCwia2V5IjoiNG42ZjN6S29WUE5XTkZVMzkxMWdPcHVGcllpTEQzbWE3MHVDeEJkcEVodUFSWWZBUnoiLCJjcmVhdGVkX2F0IjoiMjAyNS0wMS0wOVQxMTo1MTo1MSswMDowMCIsImlhdCI6MTczNjQyMzUxMX0.4gYQr7ZBgYbSVcLQvwWS68oa0jbOmHtwjt4u3Vte6RU";
+  const tokenAPI = process.env.NEXT_PUBLIC_TOKENAPI;
 
   try {
     const response = await axios.get(
