@@ -56,7 +56,7 @@ export default function Home() {
   }, [Favorites]);
 
   return (
-    <main className="h-screen flex items-center justify-center">
+    <main className="h-screen flex flex-col gap-10 items-center justify-center">
       <div className="p-10 flex justify-center flex-col items-center h-fit w-[70%] ring-1 ring-gray-400 shadow-xl bg-white rounded-lg">
         <h1 className="text-black text-2xl font-bold mb-4">
           Générateur de blagues
