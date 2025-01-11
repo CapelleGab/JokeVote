@@ -32,7 +32,6 @@ export default function Home() {
   };
 
   const handleAddFavorite = (label: string, answer: string) => {
-    handleClick();
     const existingFavoriteIndex = Favorites.findIndex(
       (fav) => fav.label === label && fav.answer === answer
     );
@@ -55,6 +54,7 @@ export default function Home() {
       };
       setFavorites([...Favorites, newFavorite]);
       setIsFav(true);
+      handleClick();
     }
   };
 
