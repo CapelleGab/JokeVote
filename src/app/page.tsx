@@ -99,7 +99,7 @@ export default function Home() {
             Random
           </button>
         </div>
-        <hr />
+
         <div className="gap-2">
           {joke !== "" ? (
             <Joke
