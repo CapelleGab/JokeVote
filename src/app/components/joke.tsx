@@ -12,13 +12,17 @@ export const Joke = (props: Props) => {
     <div className="p-4 ring-2 ring-neutral-500 rounded-lg">
       <div className="float-end">
         {props.isFav ? (
-          <MdFavorite color="black" width={20} />
+          <MdFavorite color="black" width={20} onClick={props.onClick} />
         ) : (
           <MdFavoriteBorder color="black" width={20} onClick={props.onClick} />
         )}
       </div>
-      <p className="text-base text-black mb-3 mr-24">{props.text}</p>
-      <p className="text-base text-black blur-md hover:blur-0 ease-in-out duration-200">
+      <p className="text-base font-bold text-black mb-3 mr-24">{props.text}</p>
+      <p
+        className={`text-base italic text-black ${
+          props.isFav ? "" : "blur-md hover:blur-0"
+        } ease-in-out duration-200`}
+      >
         {props.answer}
       </p>
     </div>

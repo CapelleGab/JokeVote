@@ -4,6 +4,26 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: lightgray;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* styles.css */
+.scrollbar-custom {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent; /* Firefox */
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px; /* Largeur de la scrollbar */
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* Couleur du thumb */
+  border-radius: 10px; /* Arrondir les coins */
+  border: 2px solid transparent; /* Rendre les bords transparents */
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background-color: transparent; /* Couleur de l'arrière-plan */
 }
