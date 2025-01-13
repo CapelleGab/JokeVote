@@ -78,7 +78,7 @@ export default function Home() {
 
   return (
     <main className="h-screen flex flex-col gap-10 items-center justify-center">
-      <div className="p-10 flex justify-center flex-col items-center h-fit max-h-[1000px] w-[70%] ring-1 ring-gray-400 shadow-xl bg-white rounded-lg">
+      <div className="p-10 flex justify-center flex-col items-center h-fit max-h-[1000px] max-sm:mx-10 w-fit ring-1 ring-gray-400 shadow-xl bg-white rounded-lg">
         <h1 className="text-black text-2xl font-bold mb-4">
           Générateur de blagues
         </h1>

@@ -17,7 +17,9 @@ export const Joke = (props: Props) => {
           <MdFavoriteBorder color="black" width={20} onClick={props.onClick} />
         )}
       </div>
-      <p className="text-base font-bold text-black mb-3 mr-24">{props.text}</p>
+      <p className="text-base max-sm:text-[13px] font-bold text-black mb-3 mr-24">
+        {props.text}
+      </p>
       <p
         className={`text-base italic text-black ${
           props.isFav ? "" : "blur-md hover:blur-0"
