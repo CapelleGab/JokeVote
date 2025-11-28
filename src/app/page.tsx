@@ -97,7 +97,7 @@ export default function Home() {
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000" />
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -105,7 +105,7 @@ export default function Home() {
       >
         <div className="p-8 md:p-12">
           <header className="text-center mb-10">
-            <motion.h1 
+            <motion.h1
               className="text-4xl md:text-6xl font-extrabold tracking-tighter bg-gradient-to-br from-slate-800 to-slate-500 bg-clip-text text-transparent mb-2"
               initial={{ letterSpacing: "-0.1em", opacity: 0 }}
               animate={{ letterSpacing: "-0.05em", opacity: 1 }}
@@ -113,9 +113,11 @@ export default function Home() {
             >
               JokeVote.
             </motion.h1>
-            <p className="text-slate-500 font-medium">Générateur de blagues premium</p>
+            <p className="text-slate-500 font-medium">
+              Générateur de blagues premium
+            </p>
           </header>
-          
+
           {/* Segmented Control for Categories */}
           <div className="flex justify-center mb-12">
             <div className="bg-slate-200/50 p-1.5 rounded-full flex flex-wrap justify-center gap-1 backdrop-blur-sm">
@@ -136,7 +138,7 @@ export default function Home() {
           <div className="min-h-[200px] flex items-center justify-center mb-12">
             <AnimatePresence mode="wait">
               {joke ? (
-                <motion.div 
+                <motion.div
                   key={joke + answer} // Unique key for animation
                   className="w-full"
                 >
@@ -148,14 +150,16 @@ export default function Home() {
                   />
                 </motion.div>
               ) : (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   className="text-center space-y-4"
                 >
                   <div className="text-6xl">🎭</div>
-                  <p className="text-slate-400 font-medium">Prêt à rire ? Choisissez une catégorie.</p>
+                  <p className="text-slate-400 font-medium">
+                    Prêt à rire ? Choisissez une catégorie.
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -173,7 +177,12 @@ export default function Home() {
                 loading && "cursor-not-allowed"
               )}
             >
-              <span className={cn("flex items-center gap-2", loading && "opacity-0")}>
+              <span
+                className={cn(
+                  "flex items-center gap-2",
+                  loading && "opacity-0"
+                )}
+              >
                 Générer une blague <span className="text-yellow-400">✨</span>
               </span>
               {loading && (
@@ -195,28 +204,38 @@ export default function Home() {
               >
                 <div className="flex items-center gap-3 mb-6">
                   <div className="h-px bg-slate-200 flex-1" />
-                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Vos Favoris</h3>
+                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
+                    Vos Favoris
+                  </h3>
                   <div className="h-px bg-slate-200 flex-1" />
                 </div>
-                
+
                 <div className="grid grid-cols-1 gap-4 max-h-[400px] overflow-y-auto scrollbar-hide pr-2">
                   <AnimatePresence initial={false}>
-                    {Favorites.slice().reverse().map((fav) => (
-                      <motion.div
-                        key={fav.id}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                        layout
-                      >
-                        <Joke
-                          text={fav.label}
-                          answer={fav.answer}
-                          onClick={() => handleAddFavorite(fav.label, fav.answer)}
-                          isFav={true}
-                        />
-                      </motion.div>
-                    ))}
+                    {Favorites.slice()
+                      .reverse()
+                      .map((fav) => (
+                        <motion.div
+                          key={fav.id}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{
+                            opacity: 0,
+                            scale: 0.9,
+                            transition: { duration: 0.2 },
+                          }}
+                          layout
+                        >
+                          <Joke
+                            text={fav.label}
+                            answer={fav.answer}
+                            onClick={() =>
+                              handleAddFavorite(fav.label, fav.answer)
+                            }
+                            isFav={true}
+                          />
+                        </motion.div>
+                      ))}
                   </AnimatePresence>
                 </div>
               </motion.div>
@@ -226,7 +245,7 @@ export default function Home() {
       </motion.div>
 
       <footer className="mt-8 text-slate-400 text-sm font-medium text-center relative z-10">
-        &copy; 2025 JokeVote • Design Engineering by Gabin Capelle
+        &copy; 2025 JokeVote • Made with ❤️ by Gabin Capelle
       </footer>
     </main>
   );
