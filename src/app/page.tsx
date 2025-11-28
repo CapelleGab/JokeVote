@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { MdKeyboardArrowDown, MdCheck } from "react-icons/md";
 import getJoke from "./api/jokeAPI";
 import { Joke } from "./components/joke";
 import { TypeButton } from "./components/TypeButton";
@@ -19,6 +20,7 @@ export default function Home() {
   const [joke, setJoke] = useState<string>("");
   const [answer, setAnswer] = useState<string>("");
   const [type, setType] = useState<string>("random");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [Favorites, setFavorites] = useState<
     { id: number; label: string; answer: string }[]
   >([]);
@@ -43,6 +45,7 @@ export default function Home() {
 
   const handleChangeType = (changedType: string) => {
     setType(changedType);
+    setIsDropdownOpen(false);
   };
 
   const handleAddFavorite = (label: string, answer: string) => {
@@ -103,10 +106,10 @@ export default function Home() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="w-full max-w-3xl glass-panel rounded-3xl shadow-2xl overflow-hidden relative z-10"
       >
-        <div className="p-8 md:p-12">
+        <div className="p-6 md:p-12">
           <header className="text-center mb-10">
             <motion.h1
-              className="text-4xl md:text-6xl font-extrabold tracking-tighter bg-gradient-to-br from-slate-800 to-slate-500 bg-clip-text text-transparent mb-2"
+              className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tighter bg-gradient-to-br from-slate-800 to-slate-500 bg-clip-text text-transparent mb-2"
               initial={{ letterSpacing: "-0.1em", opacity: 0 }}
               animate={{ letterSpacing: "-0.05em", opacity: 1 }}
               transition={{ duration: 1 }}
@@ -118,9 +121,9 @@ export default function Home() {
             </p>
           </header>
 
-          {/* Segmented Control for Categories */}
-          <div className="flex justify-center mb-12">
-            <div className="bg-slate-200/50 p-1.5 rounded-full flex flex-wrap justify-center gap-1 backdrop-blur-sm">
+          {/* Categories - Desktop (Tabs) */}
+          <div className="hidden md:flex justify-center mb-12">
+            <div className="bg-slate-200/50 p-1.5 md:p-2 rounded-full flex flex-wrap justify-center gap-1.5 md:gap-3 backdrop-blur-sm">
               <LayoutGroup>
                 {JOKE_TYPES.map((t) => (
                   <TypeButton
@@ -132,6 +135,56 @@ export default function Home() {
                 ))}
               </LayoutGroup>
             </div>
+          </div>
+
+          {/* Categories - Mobile (Custom Dropdown) */}
+          <div className="md:hidden mb-8 relative z-50 px-2">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full bg-white/80 backdrop-blur-md border border-white/60 py-3.5 px-5 rounded-2xl flex items-center justify-between shadow-sm text-slate-700 font-semibold transition-all active:scale-[0.99]"
+            >
+              <span className="truncate">
+                {JOKE_TYPES.find((t) => t.id === type)?.label || "Choisir une catégorie"}
+              </span>
+              <motion.div
+                animate={{ rotate: isDropdownOpen ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <MdKeyboardArrowDown className="w-6 h-6 text-slate-500" />
+              </motion.div>
+            </button>
+
+            <AnimatePresence>
+              {isDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute top-full left-0 right-0 mt-2 mx-2 bg-white/90 backdrop-blur-xl border border-white/50 rounded-2xl shadow-xl overflow-hidden"
+                >
+                  <div className="p-1.5 flex flex-col gap-0.5">
+                    {JOKE_TYPES.map((t) => (
+                      <button
+                        key={t.id}
+                        onClick={() => handleChangeType(t.id)}
+                        className={cn(
+                          "w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors flex items-center justify-between",
+                          type === t.id
+                            ? "bg-violet-50 text-violet-700"
+                            : "text-slate-600 hover:bg-slate-50"
+                        )}
+                      >
+                        {t.label}
+                        {type === t.id && (
+                          <MdCheck className="w-5 h-5 text-violet-600" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Joke Display Area */}
@@ -173,7 +226,7 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
               disabled={loading}
               className={cn(
-                "relative px-10 py-4 bg-slate-900 text-white text-lg font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-70",
+                "relative px-8 py-3 md:px-10 md:py-4 bg-slate-900 text-white text-base md:text-lg font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-70",
                 loading && "cursor-not-allowed"
               )}
             >

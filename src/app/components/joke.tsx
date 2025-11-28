@@ -16,9 +16,9 @@ export const Joke = ({ text, answer, isFav, onClick }: Props) => {
 
   const handleLike = () => {
     if (!isFav) {
-      const rect = document.getElementById("like-btn")?.getBoundingClientRect();
-      const x = rect ? (rect.left + rect.width / 2) / window.innerWidth : 0.5;
-      const y = rect ? (rect.top + rect.height / 2) / window.innerHeight : 0.5;
+      // Confetti origin at the center of the screen for responsive design
+      const x = 0.5;
+      const y = 0.5;
       
       confetti({
         particleCount: 100,
@@ -37,14 +37,14 @@ export const Joke = ({ text, answer, isFav, onClick }: Props) => {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
       transition={{ type: "spring", duration: 0.5 }}
-      className="relative p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-500"
+      className="relative p-6 md:p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-500"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Decorative background gradient blob */}
       <div className="absolute -top-20 -right-20 w-40 h-40 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
       
-      <div className="absolute top-6 right-6 z-20">
+      <div className="absolute top-4 right-4 md:top-6 md:right-6 z-20">
         <motion.button
           id="like-btn"
           onClick={handleLike}
@@ -80,7 +80,7 @@ export const Joke = ({ text, answer, isFav, onClick }: Props) => {
       </div>
 
       <div className="pr-14 relative z-10">
-        <h3 className="text-xl font-bold text-slate-800 mb-6 leading-relaxed tracking-tight">
+        <h3 className="text-lg md:text-xl font-bold text-slate-800 mb-6 leading-relaxed tracking-tight">
           {text}
         </h3>
         
@@ -90,7 +90,7 @@ export const Joke = ({ text, answer, isFav, onClick }: Props) => {
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="cursor-pointer select-none"
           >
-            <p className="text-lg font-medium text-violet-600 italic">
+            <p className="text-base md:text-lg font-medium text-violet-600 italic">
               {answer}
             </p>
           </motion.div>

@@ -14,7 +14,7 @@ export const TypeButton = ({ onClick, label, isActive }: TypeButtonProps) => {
     <button
       onClick={onClick}
       className={cn(
-        "relative px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500",
+        "relative px-3 py-2 md:px-5 md:py-2.5 rounded-full text-sm font-medium transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500",
         isActive ? "text-white" : "text-slate-600 hover:text-slate-900"
       )}
       style={{ WebkitTapHighlightColor: "transparent" }}
