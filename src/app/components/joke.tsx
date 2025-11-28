@@ -1,4 +1,8 @@
+import { motion, AnimatePresence } from "framer-motion";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
+import confetti from "canvas-confetti";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export type Props = {
   text: string;
@@ -7,26 +11,100 @@ export type Props = {
   onClick: () => void;
 };
 
-export const Joke = (props: Props) => {
+export const Joke = ({ text, answer, isFav, onClick }: Props) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleLike = () => {
+    if (!isFav) {
+      const rect = document.getElementById("like-btn")?.getBoundingClientRect();
+      const x = rect ? (rect.left + rect.width / 2) / window.innerWidth : 0.5;
+      const y = rect ? (rect.top + rect.height / 2) / window.innerHeight : 0.5;
+      
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { x, y },
+        colors: ['#8b5cf6', '#ec4899', '#3b82f6']
+      });
+    }
+    onClick();
+  };
+
   return (
-    <div className="p-4 ring-2 ring-neutral-500 rounded-lg">
-      <div className="float-end">
-        {props.isFav ? (
-          <MdFavorite color="black" width={20} onClick={props.onClick} />
-        ) : (
-          <MdFavoriteBorder color="black" width={20} onClick={props.onClick} />
-        )}
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+      transition={{ type: "spring", duration: 0.5 }}
+      className="relative p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-500"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Decorative background gradient blob */}
+      <div className="absolute -top-20 -right-20 w-40 h-40 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
+      
+      <div className="absolute top-6 right-6 z-20">
+        <motion.button
+          id="like-btn"
+          onClick={handleLike}
+          whileTap={{ scale: 0.8 }}
+          whileHover={{ scale: 1.1 }}
+          className={cn(
+            "p-3 rounded-full transition-colors duration-300",
+            isFav ? "bg-red-50 text-red-500" : "bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-400"
+          )}
+        >
+          <AnimatePresence mode="wait">
+            {isFav ? (
+              <motion.div
+                key="filled"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+              >
+                <MdFavorite className="w-6 h-6" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="outline"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+              >
+                <MdFavoriteBorder className="w-6 h-6" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.button>
       </div>
-      <p className="text-base max-sm:text-[13px] font-bold text-black mb-3 mr-24">
-        {props.text}
-      </p>
-      <p
-        className={`text-base italic text-black ${
-          props.isFav ? "" : "blur-md hover:blur-0"
-        } ease-in-out duration-200`}
-      >
-        {props.answer}
-      </p>
-    </div>
+
+      <div className="pr-14 relative z-10">
+        <h3 className="text-xl font-bold text-slate-800 mb-6 leading-relaxed tracking-tight">
+          {text}
+        </h3>
+        
+        <div className="relative inline-block">
+          <motion.div
+            animate={{ filter: isHovered || isFav ? "blur(0px)" : "blur(8px)" }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="cursor-pointer select-none"
+          >
+            <p className="text-lg font-medium text-violet-600 italic">
+              {answer}
+            </p>
+          </motion.div>
+          
+          {/* Hint text that disappears on hover */}
+          <motion.span
+            initial={{ opacity: 1 }}
+            animate={{ opacity: isHovered || isFav ? 0 : 0.6 }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs uppercase tracking-widest font-bold text-slate-400 pointer-events-none whitespace-nowrap"
+          >
+            Réponse
+          </motion.span>
+        </div>
+      </div>
+    </motion.div>
   );
 };

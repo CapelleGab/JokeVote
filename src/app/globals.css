@@ -2,28 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
 body {
   color: var(--foreground);
-  background: lightgray;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--background);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* styles.css */
-.scrollbar-custom {
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: rgba(0, 0, 0, 0.3) transparent; /* Firefox */
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
-.scrollbar-custom::-webkit-scrollbar {
-  width: 8px; /* Largeur de la scrollbar */
+/* Blob Animations */
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
 }
 
-.scrollbar-custom::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3); /* Couleur du thumb */
-  border-radius: 10px; /* Arrondir les coins */
-  border: 2px solid transparent; /* Rendre les bords transparents */
+.animate-blob {
+  animation: blob 7s infinite;
 }
 
-.scrollbar-custom::-webkit-scrollbar-track {
-  background-color: transparent; /* Couleur de l'arrière-plan */
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }

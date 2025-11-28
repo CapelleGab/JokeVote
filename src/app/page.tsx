@@ -1,9 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import getJoke from "./api/jokeAPI";
 import { Joke } from "./components/joke";
 import { TypeButton } from "./components/TypeButton";
+import { cn } from "@/lib/utils";
+
+const JOKE_TYPES = [
+  { id: "dark", label: "Humour noir" },
+  { id: "beauf", label: "Beauf" },
+  { id: "limit", label: "Limite" },
+  { id: "dev", label: "Développeur" },
+  { id: "random", label: "Aléatoire" },
+];
 
 export default function Home() {
   const [joke, setJoke] = useState<string>("");
@@ -13,8 +23,10 @@ export default function Home() {
     { id: number; label: string; answer: string }[]
   >([]);
   const [isFav, setIsFav] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
+    setLoading(true);
     setIsFav(false);
     try {
       const fetchedJoke = await getJoke({ filtre: type });
@@ -24,6 +36,8 @@ export default function Home() {
       console.error("Erreur lors de la récupération de la blague:", error);
       setJoke("Une erreur est survenue.");
       setAnswer("La réponse n'a pas été renseignée.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,7 +51,6 @@ export default function Home() {
     );
 
     if (existingFavoriteIndex !== -1) {
-      // Si la blague est déjà dans les favoris, on la retire
       const updatedFavorites = Favorites.filter(
         (fav) => fav.label !== label || fav.answer !== answer
       );
@@ -46,7 +59,6 @@ export default function Home() {
         setIsFav(false);
       }
     } else {
-      // Sinon, on l'ajoute
       const newFavorite = {
         id: Date.now(),
         label: joke,
@@ -77,81 +89,144 @@ export default function Home() {
   }, [Favorites]);
 
   return (
-    <main className="h-screen flex flex-col gap-10 items-center justify-center">
-      <div className="p-10 flex justify-center flex-col items-center h-fit max-h-[1000px] max-sm:mx-10 w-fit ring-1 ring-gray-400 shadow-xl bg-white rounded-lg">
-        <h1 className="text-black text-2xl font-bold mb-4">
-          Générateur de blagues
-        </h1>
-        <div className="w-full mb-8 flex justify-end gap-2">
-          <TypeButton
-            onClick={() => handleChangeType("dark")}
-            label="Humour noir"
-            isActive={type === "dark"}
-          />
-          <TypeButton
-            onClick={() => handleChangeType("beauf")}
-            label="Beauf"
-            isActive={type === "beauf"}
-          />
-          <TypeButton
-            onClick={() => handleChangeType("limit")}
-            label="Limite"
-            isActive={type === "limit"}
-          />
-          <TypeButton
-            onClick={() => handleChangeType("dev")}
-            label="Développeur"
-            isActive={type === "dev"}
-          />
-          <TypeButton
-            onClick={() => handleChangeType("random")}
-            label="Aléatoire"
-            isActive={type === "random"}
-          />
-        </div>
-        <hr />
-        <div className="gap-2 w-full mb-4">
-          {joke !== "" ? (
-            <Joke
-              text={joke}
-              answer={answer}
-              isFav={isFav}
-              onClick={() => handleAddFavorite(joke, answer)}
-            />
-          ) : (
-            <></>
-          )}
-        </div>
-        <button
-          onClick={handleClick}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Générer une blague
-        </button>
-
-        <br />
-
-        <div className="w-full">
-          <h3 className="text-left text-2xl mb-3">Mes Favories</h3>
-          <div className="flex flex-col w-full gap-3 overflow-y-scroll scrollbar-custom p-1 max-h-72">
-            {Favorites.slice()
-              .reverse()
-              .map((fav) => (
-                <span key={fav.id}>
-                  <Joke
-                    text={fav.label}
-                    answer={fav.answer}
-                    onClick={() => handleAddFavorite(fav.label, fav.answer)}
-                    isFav={true}
-                  />
-                </span>
-              ))}
-          </div>
-        </div>
+    <main className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center p-4 md:p-8">
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 w-full h-full bg-slate-50 overflow-hidden -z-20">
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob" />
+        <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000" />
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000" />
       </div>
 
-      <footer>
-        &copy; 2025 Copyright JokeGenerator made by Gabin Capelle with ❤️
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="w-full max-w-3xl glass-panel rounded-3xl shadow-2xl overflow-hidden relative z-10"
+      >
+        <div className="p-8 md:p-12">
+          <header className="text-center mb-10">
+            <motion.h1 
+              className="text-4xl md:text-6xl font-extrabold tracking-tighter bg-gradient-to-br from-slate-800 to-slate-500 bg-clip-text text-transparent mb-2"
+              initial={{ letterSpacing: "-0.1em", opacity: 0 }}
+              animate={{ letterSpacing: "-0.05em", opacity: 1 }}
+              transition={{ duration: 1 }}
+            >
+              JokeVote.
+            </motion.h1>
+            <p className="text-slate-500 font-medium">Générateur de blagues premium</p>
+          </header>
+          
+          {/* Segmented Control for Categories */}
+          <div className="flex justify-center mb-12">
+            <div className="bg-slate-200/50 p-1.5 rounded-full flex flex-wrap justify-center gap-1 backdrop-blur-sm">
+              <LayoutGroup>
+                {JOKE_TYPES.map((t) => (
+                  <TypeButton
+                    key={t.id}
+                    onClick={() => handleChangeType(t.id)}
+                    label={t.label}
+                    isActive={type === t.id}
+                  />
+                ))}
+              </LayoutGroup>
+            </div>
+          </div>
+
+          {/* Joke Display Area */}
+          <div className="min-h-[200px] flex items-center justify-center mb-12">
+            <AnimatePresence mode="wait">
+              {joke ? (
+                <motion.div 
+                  key={joke + answer} // Unique key for animation
+                  className="w-full"
+                >
+                  <Joke
+                    text={joke}
+                    answer={answer}
+                    isFav={isFav}
+                    onClick={() => handleAddFavorite(joke, answer)}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-center space-y-4"
+                >
+                  <div className="text-6xl">🎭</div>
+                  <p className="text-slate-400 font-medium">Prêt à rire ? Choisissez une catégorie.</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Generate Button */}
+          <div className="flex justify-center mb-16">
+            <motion.button
+              onClick={handleClick}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              disabled={loading}
+              className={cn(
+                "relative px-10 py-4 bg-slate-900 text-white text-lg font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-70",
+                loading && "cursor-not-allowed"
+              )}
+            >
+              <span className={cn("flex items-center gap-2", loading && "opacity-0")}>
+                Générer une blague <span className="text-yellow-400">✨</span>
+              </span>
+              {loading && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                </div>
+              )}
+            </motion.button>
+          </div>
+
+          {/* Favorites Section */}
+          <AnimatePresence>
+            {Favorites.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="border-t border-slate-200 pt-10"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="h-px bg-slate-200 flex-1" />
+                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Vos Favoris</h3>
+                  <div className="h-px bg-slate-200 flex-1" />
+                </div>
+                
+                <div className="grid grid-cols-1 gap-4 max-h-[400px] overflow-y-auto scrollbar-hide pr-2">
+                  <AnimatePresence initial={false}>
+                    {Favorites.slice().reverse().map((fav) => (
+                      <motion.div
+                        key={fav.id}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                        layout
+                      >
+                        <Joke
+                          text={fav.label}
+                          answer={fav.answer}
+                          onClick={() => handleAddFavorite(fav.label, fav.answer)}
+                          isFav={true}
+                        />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+
+      <footer className="mt-8 text-slate-400 text-sm font-medium text-center relative z-10">
+        &copy; 2025 JokeVote • Design Engineering by Gabin Capelle
       </footer>
     </main>
   );
